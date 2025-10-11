@@ -1,13 +1,20 @@
 #include "main_window.h"
+#include "clock_layer.h"
 
 static Window *s_main_window;
 
-static void main_window_load(Window *window) {
+static void main_window_tick(struct tm *time, TimeUnits units) {
+  clock_layer_update();
+}
 
+static void main_window_load(Window *window) {
+  clock_layer_init(s_main_window, GPoint(0, 60));
+  tick_timer_service_subscribe(SECOND_UNIT, main_window_tick);
 }
 
 static void main_window_unload(Window *window) {
-
+  tick_timer_service_unsubscribe();
+  clock_layer_deinit();
 }
 
 void main_window_init(void) {

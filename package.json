@@ -24,7 +24,17 @@
       "dummy"
     ],
     "resources": {
-      "media": []
+      "media": [{
+        "type": "font",
+        "name": "CLOCK_FONT_38",
+        "file": "clock_font_big.ttf",
+        "characterRange": "[0-9]"
+      }, {
+        "type": "font",
+        "name": "CLOCK_FONT_26",
+        "file": "clock_font_small.ttf",
+        "characterRange": "[0-9]"
+      }]
     }
   }
 }
