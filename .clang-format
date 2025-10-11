@@ -1,0 +1,7 @@
+---
+BasedOnStyle: google
+IndentWidth: 2
+UseTab: Never
+PointerAlignment: Right
+ColumnLimit: 100
+---
