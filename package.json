@@ -25,6 +25,18 @@
     ],
     "resources": {
       "media": [{
+        "type": "bitmap",
+        "name": "CHARACTER_EVEN",
+        "file": "character_even.png",
+        "memoryFormat": "Smallest",
+        "spaceOptimization": "memory"
+      }, {
+        "type": "bitmap",
+        "name": "CHARACTER_ODD",
+        "file": "character_odd.png",
+        "memoryFormat": "Smallest",
+        "spaceOptimization": "memory"
+      }, {
         "type": "font",
         "name": "CLOCK_FONT_38",
         "file": "clock_font_big.ttf",

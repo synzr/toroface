@@ -69,11 +69,10 @@ void clock_layer_init(Window *window, GPoint position) {
   s_clock_layer =
       layer_create(GRect(position.x, position.y, window_bounds.size.w - position.x, 40));
   layer_set_update_proc(s_clock_layer, clock_layer_update_proc);
-
   layer_add_child(window_root_layer, s_clock_layer);
 }
 
-void clock_layer_update(void) {
+void clock_layer_tick(void) {
   layer_mark_dirty(s_clock_layer);
 }
 
