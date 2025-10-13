@@ -38,12 +38,12 @@
         "spaceOptimization": "memory"
       }, {
         "type": "font",
-        "name": "CLOCK_FONT_38",
+        "name": "CLOCK_FONT_40",
         "file": "clock_font_big.ttf",
         "characterRange": "[0-9]"
       }, {
         "type": "font",
-        "name": "CLOCK_FONT_26",
+        "name": "CLOCK_FONT_28",
         "file": "clock_font_small.ttf",
         "characterRange": "[0-9]"
       }]

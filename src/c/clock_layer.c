@@ -47,7 +47,7 @@ static void clock_layer_update_proc(Layer *layer, GContext *ctx) {
   graphics_draw_text(
       ctx, s_clock_measure_buffer, s_clock_font_small,
       GRect(clock_w_pad + (big_text_size.w * 2) + CLOCK_BETWEEN_HM_SPACE + CLOCK_COMMON_SPACE,
-            small_text_size.h - 12, small_text_size.w, small_text_size.h),
+            small_text_size.h - 13, small_text_size.w, small_text_size.h),
       GTextOverflowModeFill, GTextAlignmentLeft, NULL);
 
   // Draw the colon between hours and minutes;
@@ -60,8 +60,8 @@ static void clock_layer_update_proc(Layer *layer, GContext *ctx) {
 }
 
 void clock_layer_init(Window *window, GPoint position) {
-  s_clock_font_big = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_CLOCK_FONT_38));
-  s_clock_font_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_CLOCK_FONT_26));
+  s_clock_font_big = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_CLOCK_FONT_40));
+  s_clock_font_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_CLOCK_FONT_28));
 
   Layer *window_root_layer = window_get_root_layer(window);
   GRect window_bounds = layer_get_unobstructed_bounds(window_root_layer);
