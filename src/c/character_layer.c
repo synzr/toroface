@@ -1,26 +1,19 @@
 #include "character_layer.h"
+#include "resources_service.h"
 
 #define CHARACTER_H 80
 #define CHARACTER_STEP 4
 
 typedef struct CharacterLayerData {
-  int ticks;
-  GBitmap *even;
-  GBitmap *odd;
+  int8_t ticks;
 } CharacterLayerData;
 
 static Layer *s_character_layer;
 
 static void character_layer_update_proc(Layer *layer, GContext *ctx) {
-  CharacterLayerData *layer_data = layer_get_data(s_character_layer);
-
   // Get the character bitmap.
-  GBitmap *bitmap;
-  if (layer_data->ticks % 2 == 0) {
-    bitmap = layer_data->even;
-  } else {
-    bitmap = layer_data->odd;
-  }
+  CharacterLayerData *layer_data = layer_get_data(s_character_layer);
+  GBitmap *bitmap = resources_service_get_character(layer_data->ticks);
 
   // Get the position of character bitmap and align it to bottom.
   GRect frame = gbitmap_get_bounds(bitmap);
@@ -50,8 +43,6 @@ void character_layer_init(Window *window) {
       layer_create_with_data(GRect(0, window_bounds.size.h - CHARACTER_H, window_bounds.size.w, CHARACTER_H), sizeof(CharacterLayerData));
 
   CharacterLayerData *layer_data = layer_get_data(s_character_layer);
-  layer_data->even = gbitmap_create_with_resource(RESOURCE_ID_CHARACTER_EVEN);
-  layer_data->odd = gbitmap_create_with_resource(RESOURCE_ID_CHARACTER_ODD);
   layer_data->ticks = 0;
 
   layer_set_update_proc(s_character_layer, character_layer_update_proc);
@@ -67,8 +58,5 @@ void character_layer_tick(void) {
 }
 
 void character_layer_deinit(void) {
-  CharacterLayerData *layer_data = layer_get_data(s_character_layer);
-  gbitmap_destroy(layer_data->even);
-  gbitmap_destroy(layer_data->odd);
   layer_destroy(s_character_layer);
 }
