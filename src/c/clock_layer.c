@@ -1,14 +1,19 @@
 #include "clock_layer.h"
 
-#define CLOCK_COMMON_SPACE 2
-#define CLOCK_BETWEEN_HM_SPACE 8
+#define CLOCK_H 40
+#define CLOCK_SPACE 2
+#define CLOCK_OFFSET 4
 
-static GFont s_clock_font_big;
-static GFont s_clock_font_small;
+typedef struct ClockLayerData {
+  GFont font_big;
+  GFont font_small;
+} ClockLayerData;
+
 static Layer *s_clock_layer;
-static char s_clock_measure_buffer[4];
 
 static void clock_layer_update_proc(Layer *layer, GContext *ctx) {
+  ClockLayerData *layer_data = layer_get_data(s_clock_layer);
+
   // Fill a whole layer with the black color.
   GRect layer_bounds = layer_get_unobstructed_bounds(layer);
   layer_bounds.origin = GPoint(0, 0);
@@ -19,55 +24,46 @@ static void clock_layer_update_proc(Layer *layer, GContext *ctx) {
   time_t tmp = time(NULL);
   struct tm *time = localtime(&tmp);
 
-  // Drawing the measures.
+  // Drawing the time and seconds.
+  static char time_text[6], seconds_text[3] = "00\0";
   graphics_context_set_text_color(ctx, GColorWhite);
 
-  GSize big_text_size = graphics_text_layout_get_content_size(
-      "00", s_clock_font_big, layer_bounds, GTextOverflowModeFill, GTextAlignmentLeft);
-  GSize small_text_size = graphics_text_layout_get_content_size(
-      "00", s_clock_font_small, layer_bounds, GTextOverflowModeFill, GTextAlignmentLeft);
+  strftime(time_text, sizeof(time_text), clock_is_24h_style() ? "%H:%M" : "%I:%M", time);
+  GSize time_text_size = graphics_text_layout_get_content_size(
+      time_text, layer_data->font_big, layer_bounds, GTextOverflowModeFill, GTextAlignmentLeft);
 
-  int clock_w =
-      (big_text_size.w * 2) + small_text_size.w + CLOCK_COMMON_SPACE + CLOCK_BETWEEN_HM_SPACE;
-  int clock_w_pad = (layer_bounds.size.w - clock_w) / 2;
+  seconds_text[0] = seconds_text[1] = '0';
+  GSize seconds_text_size = graphics_text_layout_get_content_size(
+      seconds_text, layer_data->font_small, layer_bounds, GTextOverflowModeFill, GTextAlignmentLeft);
+  strftime(seconds_text, sizeof(seconds_text), "%S", time);
 
-  strftime(s_clock_measure_buffer, sizeof(s_clock_measure_buffer),
-           clock_is_24h_style() ? "%H" : "%I", time);
-  graphics_draw_text(ctx, s_clock_measure_buffer, s_clock_font_big,
-                     GRect(clock_w_pad, 1, big_text_size.w, big_text_size.h),
-                     GTextOverflowModeFill, GTextAlignmentLeft, NULL);
+  GRect timestamp_rect =
+      GRect(0, 0, time_text_size.w + seconds_text_size.w + CLOCK_SPACE, time_text_size.h);
+  grect_align(&timestamp_rect, &layer_bounds, GAlignCenter, true);
+  timestamp_rect.origin.y -= CLOCK_OFFSET;
 
-  strftime(s_clock_measure_buffer, sizeof(s_clock_measure_buffer), "%M", time);
-  graphics_draw_text(ctx, s_clock_measure_buffer, s_clock_font_big,
-                     GRect(clock_w_pad + big_text_size.w + CLOCK_BETWEEN_HM_SPACE, 1,
-                           big_text_size.w, big_text_size.h),
-                     GTextOverflowModeFill, GTextAlignmentLeft, NULL);
+  GRect time_rect =
+      GRect(timestamp_rect.origin.x, timestamp_rect.origin.y, time_text_size.w, time_text_size.h);
+  graphics_draw_text(ctx, time_text, layer_data->font_big, time_rect, GTextOverflowModeFill,
+                     GTextAlignmentLeft, NULL);
 
-  strftime(s_clock_measure_buffer, sizeof(s_clock_measure_buffer), "%S", time);
-  graphics_draw_text(
-      ctx, s_clock_measure_buffer, s_clock_font_small,
-      GRect(clock_w_pad + (big_text_size.w * 2) + CLOCK_BETWEEN_HM_SPACE + CLOCK_COMMON_SPACE,
-            small_text_size.h - 13, small_text_size.w, small_text_size.h),
-      GTextOverflowModeFill, GTextAlignmentLeft, NULL);
-
-  // Draw the colon between hours and minutes;
-  graphics_context_set_fill_color(ctx, GColorWhite);
-
-  int colon_x = clock_w_pad + big_text_size.w - 2;
-  graphics_fill_rect(ctx, GRect(colon_x, (big_text_size.h / 4) + 3, 6, 6), 0, GCornerNone);
-  graphics_fill_rect(ctx, GRect(colon_x, (big_text_size.h / 4) + (big_text_size.h / 2) - 3, 6, 6),
-                     0, GCornerNone);
+  GRect seconds_rect = GRect(0, 0, seconds_text_size.w, seconds_text_size.h);
+  grect_align(&seconds_rect, &timestamp_rect, GAlignBottomRight, true);
+  graphics_draw_text(ctx, seconds_text, layer_data->font_small, seconds_rect, GTextOverflowModeFill,
+                     GTextAlignmentLeft, NULL);
 }
 
 void clock_layer_init(Window *window, GPoint position) {
-  s_clock_font_big = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_CLOCK_FONT_40));
-  s_clock_font_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_CLOCK_FONT_28));
-
   Layer *window_root_layer = window_get_root_layer(window);
   GRect window_bounds = layer_get_unobstructed_bounds(window_root_layer);
 
   s_clock_layer =
-      layer_create(GRect(position.x, position.y, window_bounds.size.w - position.x, 40));
+      layer_create_with_data(GRect(position.x, position.y, window_bounds.size.w - position.x, CLOCK_H), sizeof(ClockLayerData));
+
+  ClockLayerData *layer_data = layer_get_data(s_clock_layer);
+  layer_data->font_big = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TORO_38));
+  layer_data->font_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONEKO_TORO_28));
+
   layer_set_update_proc(s_clock_layer, clock_layer_update_proc);
   layer_add_child(window_root_layer, s_clock_layer);
 }
@@ -77,7 +73,8 @@ void clock_layer_tick(void) {
 }
 
 void clock_layer_deinit(void) {
+  ClockLayerData *layer_data = layer_get_data(s_clock_layer);
+  fonts_unload_custom_font(layer_data->font_big);
+  fonts_unload_custom_font(layer_data->font_small);
   layer_destroy(s_clock_layer);
-  fonts_unload_custom_font(s_clock_font_big);
-  fonts_unload_custom_font(s_clock_font_small);
 }
