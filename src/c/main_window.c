@@ -7,20 +7,24 @@
 static Window *s_main_window;
 
 static void main_window_tick(struct tm *time, TimeUnits units) {
-  character_layer_tick();
-  clock_layer_tick();
   bar_layer_tick();
+  clock_layer_tick();
+  character_layer_tick();
 }
 
 static void main_window_load(Window *window) {
-  character_layer_init(s_main_window);
-  clock_layer_init(s_main_window, GPoint(0, 40));
-  bar_layer_init(s_main_window);
+  Layer *layer = window_get_root_layer(window);
+
+  bar_layer_init(layer, 0);
+  clock_layer_init(layer, 40);
+  character_layer_init(layer);
+
   tick_timer_service_subscribe(SECOND_UNIT, main_window_tick);
 }
 
 static void main_window_unload(Window *window) {
   tick_timer_service_unsubscribe();
+
   clock_layer_deinit();
   bar_layer_deinit();
   character_layer_deinit();

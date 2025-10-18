@@ -3,7 +3,7 @@
 
 #include <pebble.h>
 
-void clock_layer_init(Window *window, GPoint position);
+void clock_layer_init(Layer *layer, int y);
 void clock_layer_tick(void);
 void clock_layer_deinit(void);
 

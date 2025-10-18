@@ -1,4 +1,5 @@
 #include "character_layer.h"
+
 #include "resources_service.h"
 
 #define CHARACTER_H 80
@@ -35,18 +36,17 @@ static void character_layer_update_proc(Layer *layer, GContext *ctx) {
   graphics_draw_bitmap_in_rect(ctx, bitmap, frame);
 }
 
-void character_layer_init(Window *window) {
-  Layer *window_root_layer = window_get_root_layer(window);
-  GRect window_bounds = layer_get_unobstructed_bounds(window_root_layer);
+void character_layer_init(Layer *layer) {
+  GRect rect = layer_get_unobstructed_bounds(layer);
 
-  s_character_layer =
-      layer_create_with_data(GRect(0, window_bounds.size.h - CHARACTER_H, window_bounds.size.w, CHARACTER_H), sizeof(CharacterLayerData));
+  s_character_layer = layer_create_with_data(
+      GRect(0, rect.size.h - CHARACTER_H, rect.size.w, CHARACTER_H), sizeof(CharacterLayerData));
 
   CharacterLayerData *layer_data = layer_get_data(s_character_layer);
   layer_data->ticks = 0;
 
   layer_set_update_proc(s_character_layer, character_layer_update_proc);
-  layer_add_child(window_root_layer, s_character_layer);
+  layer_add_child(layer, s_character_layer);
 }
 
 void character_layer_tick(void) {

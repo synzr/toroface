@@ -34,14 +34,12 @@ static void bar_layer_update_proc(Layer *layer, GContext *ctx) {
                      GTextAlignmentRight, NULL);
 }
 
-void bar_layer_init(Window *window) {
-  Layer *window_layer = window_get_root_layer(window);
-  GRect window_rect = layer_get_unobstructed_bounds(window_layer);
+void bar_layer_init(Layer *layer, int y) {
+  GRect rect = layer_get_unobstructed_bounds(layer);
 
-  s_bar_layer = layer_create(GRect(BAR_PAD_W, 0, window_rect.size.w - (BAR_PAD_W * 2), 28));
+  s_bar_layer = layer_create(GRect(BAR_PAD_W, y, rect.size.w - (BAR_PAD_W * 2), 28));
   layer_set_update_proc(s_bar_layer, bar_layer_update_proc);
-
-  layer_add_child(window_layer, s_bar_layer);
+  layer_add_child(layer, s_bar_layer);
 }
 
 void bar_layer_tick(void) {
