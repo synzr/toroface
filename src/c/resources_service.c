@@ -12,9 +12,9 @@ static ResourcesService *s_resources_service;
 void resources_service_init(void) {
   s_resources_service = malloc(sizeof(ResourcesService));
   s_resources_service->font_koneko_toro =
-      fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONEKO_TORO_28));
+      fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONEKO_TORO_24));
   s_resources_service->font_toro =
-      fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TORO_38));
+      fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TORO_36));
   s_resources_service->character_even = gbitmap_create_with_resource(RESOURCE_ID_CHARACTER_EVEN);
   s_resources_service->character_odd = gbitmap_create_with_resource(RESOURCE_ID_CHARACTER_ODD);
 }

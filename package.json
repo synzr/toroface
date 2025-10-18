@@ -38,12 +38,12 @@
         "spaceOptimization": "memory"
       }, {
         "type": "font",
-        "name": "FONT_TORO_38",
+        "name": "FONT_TORO_36",
         "file": "font_toro.ttf",
         "characterRange": "[0-9:]"
       }, {
         "type": "font",
-        "name": "FONT_KONEKO_TORO_28",
+        "name": "FONT_KONEKO_TORO_24",
         "file": "font_koneko_toro.ttf",
         "characterRange": "[0-9/WTFSMedhuriaton]"
       }]
