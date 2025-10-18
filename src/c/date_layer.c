@@ -1,12 +1,11 @@
-#include "bar_layer.h"
-
+#include "date_layer.h"
 #include "resources_service.h"
 
-#define BAR_PAD_W 8
+#define PAD_W 8
 
-static Layer *s_bar_layer;
+static Layer *s_date_layer;
 
-static void bar_layer_update_proc(Layer *layer, GContext *ctx) {
+static void date_layer_update_proc(Layer *layer, GContext *ctx) {
   GRect window_rect = layer_get_unobstructed_bounds(layer);
 
   time_t tmp = time(NULL);
@@ -34,18 +33,18 @@ static void bar_layer_update_proc(Layer *layer, GContext *ctx) {
                      GTextAlignmentRight, NULL);
 }
 
-void bar_layer_init(Layer *layer, int y) {
+void date_layer_init(Layer *layer, int y) {
   GRect rect = layer_get_unobstructed_bounds(layer);
 
-  s_bar_layer = layer_create(GRect(BAR_PAD_W, y, rect.size.w - (BAR_PAD_W * 2), 28));
-  layer_set_update_proc(s_bar_layer, bar_layer_update_proc);
-  layer_add_child(layer, s_bar_layer);
+  s_date_layer = layer_create(GRect(PAD_W, y, rect.size.w - (PAD_W * 2), 28));
+  layer_set_update_proc(s_date_layer, date_layer_update_proc);
+  layer_add_child(layer, s_date_layer);
 }
 
-void bar_layer_tick(void) {
-  layer_mark_dirty(s_bar_layer);
+void date_layer_tick(void) {
+  layer_mark_dirty(s_date_layer);
 }
 
-void bar_layer_deinit(void) {
-  layer_destroy(s_bar_layer);
+void date_layer_deinit(void) {
+  layer_destroy(s_date_layer);
 }

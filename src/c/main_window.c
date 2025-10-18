@@ -1,13 +1,12 @@
 #include "main_window.h"
-
-#include "bar_layer.h"
+#include "date_layer.h"
 #include "character_layer.h"
 #include "clock_layer.h"
 
 static Window *s_main_window;
 
 static void main_window_tick(struct tm *time, TimeUnits units) {
-  bar_layer_tick();
+  date_layer_tick();
   clock_layer_tick();
   character_layer_tick();
 }
@@ -15,7 +14,7 @@ static void main_window_tick(struct tm *time, TimeUnits units) {
 static void main_window_load(Window *window) {
   Layer *layer = window_get_root_layer(window);
 
-  bar_layer_init(layer, 0);
+  date_layer_init(layer, 0);
   clock_layer_init(layer, 40);
   character_layer_init(layer);
 
@@ -26,7 +25,7 @@ static void main_window_unload(Window *window) {
   tick_timer_service_unsubscribe();
 
   clock_layer_deinit();
-  bar_layer_deinit();
+  date_layer_deinit();
   character_layer_deinit();
 }
 
