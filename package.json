@@ -23,6 +23,9 @@
     "messageKeys": [
       "dummy"
     ],
+    "capabilities": [
+      "health"
+    ],
     "resources": {
       "media": [{
         "type": "bitmap",
@@ -34,6 +37,30 @@
         "type": "bitmap",
         "name": "CHARACTER_ODD",
         "file": "character_odd.png",
+        "memoryFormat": "Smallest",
+        "spaceOptimization": "memory"
+      }, {
+        "type": "bitmap",
+        "name": "ICON_BATTERY_EMPTY",
+        "file": "icon_battery_empty.png",
+        "memoryFormat": "Smallest",
+        "spaceOptimization": "memory"
+      }, {
+        "type": "bitmap",
+        "name": "ICON_BATTERY_HALF",
+        "file": "icon_battery_half.png",
+        "memoryFormat": "Smallest",
+        "spaceOptimization": "memory"
+      }, {
+        "type": "bitmap",
+        "name": "ICON_BATTERY_FULL",
+        "file": "icon_battery_full.png",
+        "memoryFormat": "Smallest",
+        "spaceOptimization": "memory"
+      }, {
+        "type": "bitmap",
+        "name": "ICON_PAWS",
+        "file": "icon_paws.png",
         "memoryFormat": "Smallest",
         "spaceOptimization": "memory"
       }, {

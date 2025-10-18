@@ -60,6 +60,10 @@ void clock_layer_init(Layer *layer, int y) {
   layer_add_child(layer, s_clock_layer);
 }
 
+GRect clock_layer_get_bounds() {
+  return layer_get_bounds(s_clock_layer);
+}
+
 void clock_layer_tick(void) {
   layer_mark_dirty(s_clock_layer);
 }
