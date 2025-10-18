@@ -1,5 +1,8 @@
 #include "resources_service.h"
 
+#define RESOURCE_ID_FONT_KONEKO_TORO RESOURCE_ID_FONT_KONEKO_TORO_24
+#define RESOURCE_ID_FONT_TORO RESOURCE_ID_FONT_TORO_36
+
 typedef struct ResourcesService {
   GFont font_koneko_toro;
   GFont font_toro;
@@ -12,9 +15,9 @@ static ResourcesService *s_resources_service;
 void resources_service_init(void) {
   s_resources_service = malloc(sizeof(ResourcesService));
   s_resources_service->font_koneko_toro =
-      fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONEKO_TORO_24));
+      fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_KONEKO_TORO));
   s_resources_service->font_toro =
-      fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TORO_36));
+      fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TORO));
   s_resources_service->character_even = gbitmap_create_with_resource(RESOURCE_ID_CHARACTER_EVEN);
   s_resources_service->character_odd = gbitmap_create_with_resource(RESOURCE_ID_CHARACTER_ODD);
 }
