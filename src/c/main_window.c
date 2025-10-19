@@ -2,14 +2,14 @@
 #include "date_layer.h"
 #include "character_layer.h"
 #include "clock_layer.h"
-#include "information_layer.h"
+#include "info_layer.h"
 
 static Window *s_main_window;
 
 static void main_window_tick(struct tm *time, TimeUnits units) {
   date_layer_tick();
   clock_layer_tick();
-  information_layer_tick();
+  info_layer_tick();
   character_layer_tick();
 }
 
@@ -20,7 +20,7 @@ static void main_window_load(Window *window) {
   clock_layer_init(layer, 30);
 
   GRect clock_layer_rect = clock_layer_get_bounds();
-  information_layer_init(layer, 30 + clock_layer_rect.size.h + 4);
+  info_layer_init(layer, 30 + clock_layer_rect.size.h + 4);
 
   character_layer_init(layer);
 
@@ -32,7 +32,7 @@ static void main_window_unload(Window *window) {
 
   clock_layer_deinit();
   date_layer_deinit();
-  information_layer_deinit();
+  info_layer_deinit();
   character_layer_deinit();
 }
 

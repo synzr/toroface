@@ -1,37 +1,34 @@
-#include "information_layer.h"
-
+#include "info_layer.h"
 #include "resources_service.h"
 
 #define INFO_LAYER_ICON_WIDTH 18
 #define INFO_LAYER_PADDING 4
 #define INFO_LAYER_HEIGHT 24
 
-typedef struct InformationLayerData {
+typedef struct InfoLayerData {
   int level;
   int steps;
-} InformationLayerData;
+} InfoLayerData;
 
-static Layer *s_information_layer;
-static char s_information_layer_level_text[3];
-static char s_information_layer_count_text[6];
+static Layer *s_info_layer;
+static char s_info_layer_level_text[3];
+static char s_info_layer_count_text[6];
 
-static void information_layer_update_proc(Layer *layer, GContext *ctx) {
+static void info_layer_update_proc(Layer *layer, GContext *ctx) {
   GRect rect = layer_get_unobstructed_bounds(layer);
   GFont font = resources_service_get_custom_font(CustomFontKonekoToro);
-  InformationLayerData *data = layer_get_data(s_information_layer);
+  InfoLayerData *data = layer_get_data(s_info_layer);
 
   int content_w = INFO_LAYER_ICON_WIDTH + INFO_LAYER_PADDING;
 
-  snprintf(s_information_layer_level_text, sizeof(s_information_layer_level_text), "%d",
-           data->level);
+  snprintf(s_info_layer_level_text, sizeof(s_info_layer_level_text), "%d", data->level);
   GSize text_size = graphics_text_layout_get_content_size(
-      s_information_layer_level_text, font, rect, GTextOverflowModeFill, GTextAlignmentLeft);
+      s_info_layer_level_text, font, rect, GTextOverflowModeFill, GTextAlignmentLeft);
   content_w += text_size.w;
 
 #ifdef PBL_HEALTH
-  snprintf(s_information_layer_count_text, sizeof(s_information_layer_count_text), "%d",
-           data->steps);
-  text_size = graphics_text_layout_get_content_size(s_information_layer_count_text, font, rect,
+  snprintf(s_info_layer_count_text, sizeof(s_info_layer_count_text), "%d", data->steps);
+  text_size = graphics_text_layout_get_content_size(s_info_layer_count_text, font, rect,
                                                     GTextOverflowModeFill, GTextAlignmentLeft);
   content_w += INFO_LAYER_ICON_WIDTH + INFO_LAYER_PADDING + text_size.w;
 #endif
@@ -61,7 +58,7 @@ static void information_layer_update_proc(Layer *layer, GContext *ctx) {
       GRect(content_x + INFO_LAYER_ICON_WIDTH + INFO_LAYER_PADDING, -4, text_size.w, text_size.h);
 
   graphics_context_set_text_color(ctx, GColorBlack);
-  graphics_draw_text(ctx, s_information_layer_level_text, font, text_rect, GTextOverflowModeFill,
+  graphics_draw_text(ctx, s_info_layer_level_text, font, text_rect, GTextOverflowModeFill,
                      GTextAlignmentLeft, NULL);
 
 #ifdef PBL_HEALTH
@@ -75,41 +72,41 @@ static void information_layer_update_proc(Layer *layer, GContext *ctx) {
   text_rect = GRect(paws_rect.origin.x + INFO_LAYER_ICON_WIDTH + INFO_LAYER_PADDING, -4,
                     text_size.w, text_size.h);
   graphics_context_set_text_color(ctx, GColorBlack);
-  graphics_draw_text(ctx, s_information_layer_count_text, font, text_rect, GTextOverflowModeFill,
+  graphics_draw_text(ctx, s_info_layer_count_text, font, text_rect, GTextOverflowModeFill,
                      GTextAlignmentLeft, NULL);
 #endif  // PBL_HEALTH
 }
 
 static void battery_state_service_callback(BatteryChargeState charge) {
-  InformationLayerData *data = layer_get_data(s_information_layer);
+  InfoLayerData *data = layer_get_data(s_info_layer);
   data->level = charge.charge_percent;
-  layer_mark_dirty(s_information_layer);
+  layer_mark_dirty(s_info_layer);
 }
 
-void information_layer_init(Layer *layer, int y) {
+void info_layer_init(Layer *layer, int y) {
   GRect rect = layer_get_unobstructed_bounds(layer);
 
-  s_information_layer = layer_create_with_data(GRect(0, y, rect.size.w, INFO_LAYER_HEIGHT),
-                                               sizeof(InformationLayerData));
+  s_info_layer = layer_create_with_data(GRect(0, y, rect.size.w, INFO_LAYER_HEIGHT),
+                                        sizeof(InfoLayerData));
 
-  InformationLayerData *data = layer_get_data(s_information_layer);
+  InfoLayerData *data = layer_get_data(s_info_layer);
   data->level = battery_state_service_peek().charge_percent;
   data->steps = PBL_IF_HEALTH_ELSE(health_service_sum_today(HealthMetricStepCount), 0);
 
-  layer_set_update_proc(s_information_layer, information_layer_update_proc);
-  layer_add_child(layer, s_information_layer);
+  layer_set_update_proc(s_info_layer, info_layer_update_proc);
+  layer_add_child(layer, s_info_layer);
 
   battery_state_service_subscribe(battery_state_service_callback);
 }
 
-void information_layer_tick(void) {
+void info_layer_tick(void) {
 #ifdef PBL_HEALTH
-  InformationLayerData *data = layer_get_data(s_information_layer);
+  InfoLayerData *data = layer_get_data(s_info_layer);
   data->steps = health_service_sum_today(HealthMetricStepCount);
-  layer_mark_dirty(s_information_layer);
+  layer_mark_dirty(s_info_layer);
 #endif  // PBL_HEALTH
 }
 
-void information_layer_deinit(void) {
-  layer_destroy(s_information_layer);
+void info_layer_deinit(void) {
+  layer_destroy(s_info_layer);
 }
